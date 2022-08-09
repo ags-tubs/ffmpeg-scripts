@@ -3,8 +3,25 @@
 
 Collection of ffmpeg scripts and command lines used by us in various settings.
 
+## ffmpeg-uncompressed-ip-video
+  * sdi video input via BMD DeckLink card
+  * needs ffmpeg compiled with Decklink support
+  * needs 10G NIC depending on chosen resolution & framerate
+  * outputs uncompressed videofeed on second pc/monitor (other options possible)
+
+### video-rx (start this first!)
+```
+ffplay -fs -f nut -i tcp://<ip-of-rx-pc>:7000?fifo_size=2000000\&listen
+```
+
+### video-tx
+```
+ffmpeg -raw_format yuv422p10 -format_code Hp50 -f decklink -i 'DeckLink HD Extreme 3D+' -map 0:1 -c:v copy -f nut tcp://<ip-of-rx-pc>:7000
+```
+
+
 ## ffmpeg-scope for CCU-operators
-  * video input via BMD Decklink card
+  * sdi video input via BMD DeckLink card
   * needs ffmpeg compiled with Decklink support
   * outputs fullscreen view of original video, vectorscope and waveforms (tested on debian)
   * optimized for 16:10 Monitors (1920x1200)
